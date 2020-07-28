@@ -8,11 +8,15 @@ Written in one week with my [friend](https://github.com/echo82). It was our firs
 
 Clone the repository:
 ```git clone https://github.com/athaun/Snake-Terminal-Game.git```
+
 cd into the repository
 ```cd ./Snake-Terminal-Game```
+
 run
 ```g++ *.cpp -o snake.out```
+
 run
 ```./snake.out```
+
 
 Use WASD to move the snake around, collect food, and don't run into the walls or yourself.
