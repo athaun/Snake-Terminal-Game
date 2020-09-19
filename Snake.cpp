@@ -38,7 +38,7 @@ void Snake::display () {
 
     this->findMove();
     this->death();
-    this-> collectFood();
+    this->collectFood();
 
     for (int i = 0; i < snakeLength; i ++) {
         if (i == 0) {
