@@ -1,14 +1,14 @@
 /* Run command: clear && g++ *.cpp -o snake.out  */
 
 #include <iostream>
-#include "utilities.h"
+#include <signal.h>
 #include <cstring>
 #include <unistd.h>
+#include "utilities.h"
 #include "Snake.h"
 #include "map.h"
 #include "input.h"
-#include <signal.h>
-
+#include "audio.h"
 
 bool running = true;
 
@@ -17,8 +17,8 @@ Snake snake;
 int testY = 0;
 
 void cleanup () {
-    // Kill the music program
-    system("2>/dev/null 1>&2 killall canberra-gtk-play");
+    // Kill the music process
+    stopAudioProcess();
 
     printf("\nThe game has closed.\n");
 }
@@ -35,7 +35,9 @@ int main() {
     signal(SIGINT, sigintHandler); 
 
     // Starting to play music
-    system("bash -c \"canberra-gtk-play -V 0.1 -l 20 -f ./01-rondo_a_capriccio_in_g_op_129.ogg\" &"); 
+    // system("bash -c \"canberra-gtk-play -V 0.1 -l 20 -f ./01-rondo_a_capriccio_in_g_op_129.ogg\" &"); 
+
+    playQueue();
 
     seedRandom();
   
@@ -68,15 +70,12 @@ int main() {
         // Sleep for 50 milliseconds
         usleep(100 * 1000);
 
-        
-
         snake.score += 0.5;
         
         if (!snake.isAlive) {
             printf("You died.");
             running = false;            
         }
-
     }
     
     // Clean up any parts of the program before it closes

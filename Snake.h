@@ -2,6 +2,7 @@
 
 #include <utility>
 #include "input.h"
+#include <string>
 
 // Defines growth parameters for when the snake eats food.
 #define segmentGrowth 2
@@ -19,7 +20,7 @@ class Snake {
 
         DIRECTION direction = UP;
 
-        char headCharacter = '<';
+        std::string headCharacter = "<";
 
         void display ();
 

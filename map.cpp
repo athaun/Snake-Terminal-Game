@@ -8,13 +8,21 @@
 
 using namespace std;
 
-char map [mapSize][mapSize];
+
+std::string yellow = "\e[1;33m";
+std::string green = "\033[0;32m";
+std::string white = "\e[0;97m";
+std::string bold = "\e[1m";
+std::string reset = "\e[0m";
+std::string lightgray = "\e[0;37m";
+
+std::string map [mapSize][mapSize];
 
 string statsPanel = "Hello";
 
 std::pair <int, int> food [amountOfFood];
 
-void setTile (int x, int y, char c) {
+void setTile (int x, int y, std::string c) {
     if (x < mapSize && y < mapSize) {
         map[x][y] = c;
     }
@@ -34,11 +42,11 @@ void initMap () {
     }
     for (int y = 0; y < ARRAY_SIZE(map[0]); y ++) {
         for (int x = 0; x < ARRAY_SIZE(map); x ++) {
-            setTile(x, y, '`');
+            setTile(x, y, "`");
         }
     }
     for (int i = 0; i < ARRAY_SIZE(food); i ++) {
-        setTile(food[i].first, food[i].second, '&'); // Change the tile at the food positions to &
+        setTile(food[i].first, food[i].second, bold + yellow + "&" + reset); // Change the tile at the food positions to &
     }
 }
 
@@ -47,10 +55,10 @@ void clearScreen () {
 }
 
 void printMap () {
-    // Loops through the 2D array map, n prints the character contained at that index
+    // Loops through the 2D array map, n prints the std::stringacter contained at that index
     for (int y = 0; y < ARRAY_SIZE(map[0]); y ++) {
         for (int x = 0; x < ARRAY_SIZE(map); x ++) {
-            printf("%c ", map[x][y]);
+            std::cout << map[x][y] << " ";
         }
         printf("\n");
     }
