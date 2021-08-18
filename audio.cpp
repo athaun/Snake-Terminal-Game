@@ -4,7 +4,8 @@
 
 std::string musicQueue[] = {
     "lines_of_code.ogg",
-    "spy.ogg"
+    "spy.ogg",
+    "guinnea_pig_hero.ogg"
 };
 
 std::string soundFiles[] = {
