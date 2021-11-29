@@ -1,43 +1,63 @@
-/* Run command: clear && g++ *.cpp -o snake.out  */
+/* Run command: g++ *.cpp -o snake.out && ./snake.out */
 
 #include <iostream>
-#include <signal.h>
+#include "utilities.h"
 #include <cstring>
 #include <unistd.h>
-#include "utilities.h"
 #include "Snake.h"
 #include "map.h"
 #include "input.h"
-#include "audio.h"
+#include "network.h"
+#include "networkTypes.h"
 
+using namespace std;
+
+bool devTesting = true;
 bool running = true;
+bool ready = false;
+int server_port = 25565;
+std::string server_ip = "minecraft.athaun.tech";
+std::string buffer;
 
 Snake snake;
+Snake otherSnake;
+Network network;
 
 int testY = 0;
 
-void cleanup () {
-    // Kill the music process
-    stopAudioProcess();
-
-    printf("\nThe game has closed.\n");
-}
-
-void sigintHandler(int sig_num) { 
-    // Reset handler to catch SIGINT next time. 
-    signal(SIGINT, sigintHandler); 
-    running = false;
-} 
-
 int main() {
 
-    // Catching ^C
-    signal(SIGINT, sigintHandler); 
 
-    // Starting to play music
-    // system("bash -c \"canberra-gtk-play -V 0.1 -l 20 -f ./01-rondo_a_capriccio_in_g_op_129.ogg\" &"); 
+    /*
+    if user enters value 1, then they become a server. Else if, they enter a value of 2, then they become a client 
+    */
+    while (!ready) {
+        printf("Please select either server or client by typing either \"1\" or \"2\"\nType \"i\" to edit the IP address of the host or \"p\" to select the port\nCurrent address: %s:%d\n[1] Server\n[2] Client\n>>> ", server_ip.c_str(), server_port);
 
-    playQueue();
+        int character = getchar();
+        if (character == '1') {        
+            printf("\nYou has now become a server");
+            network.isServer = true;
+            ready = true;
+        } else if (character == '2') {
+            printf("\nYou has now become a client");
+            network.isServer = false;
+            ready = true;
+        } else if (character == 'i') {
+            printf("\nInput the server IP address: ");
+            std::getline(std::cin, buffer); // Pipping the unwanted RETURN line to a dummy variable
+            std::getline(std::cin, server_ip);
+            cout << "IP address set to: " + server_ip << endl;
+        } else if (character == 'p') {
+            printf("\nInput the server port: ");
+            std::getline(std::cin, buffer); // Pipping the unwanted RETURN line to a dummy variable
+            std::getline(std::cin, buffer);
+            server_port = strtol(buffer.c_str(), NULL, 0); // Setting the input string to an int, then to server_port
+            cout << "Port set to: " + server_port << endl;
+        }
+    }
+
+    network.init();
 
     seedRandom();
   
@@ -47,11 +67,16 @@ int main() {
     bool done = false;
     setNonBlocking(fd);
 
-    // Creating a random spawn with at least 6 tile buffer on every side
-    snake.initSnake(random(6, ARRAY_SIZE(map) - 6), random(6, ARRAY_SIZE(map) - 6));
+    // Creating a random spawn with at least 5 tile buffer on every side
+    snake.initSnake(random(5, ARRAY_SIZE(map) - 5), random(5, ARRAY_SIZE(map) - 5));
+    otherSnake.initSnake(random(5, ARRAY_SIZE(map) - 5), random(5, ARRAY_SIZE(map) - 5));
+    
     
     // Game Loop
     while (running) {
+         
+        network.update();
+
         keyInput(); 
 
         // Clears the terminal
@@ -62,25 +87,23 @@ int main() {
 
         // Displays the snake's head
         snake.display();
-
+        otherSnake.display();
+        
         printMap();
 
         printStat();
 
         // Sleep for 50 milliseconds
         usleep(100 * 1000);
-
-        snake.score += 0.5;
         
         if (!snake.isAlive) {
             printf("You died.");
-            running = false;            
+            running = false;
         }
+
     }
-    
-    // Clean up any parts of the program before it closes
-    cleanup();
-    
+
+    printf("\nThe game has closed.\n");
+
     return 0;
 }
-

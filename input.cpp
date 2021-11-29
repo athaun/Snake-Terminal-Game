@@ -20,6 +20,8 @@ void keyInput () {
     system("stty raw"); 
     int character = getchar();
 
+    //character=character-32;
+
     while (character > 0) {
         
         switch (character) 
@@ -27,28 +29,24 @@ void keyInput () {
             case 'w':
                 if (snake.direction != DOWN) {
                     snake.direction = UP;
-                    
                 }
                 break;
 
             case 's':
                 if (snake.direction != UP) {
-                    snake.direction = DOWN; 
-                                     
+                    snake.direction = DOWN;      
                 }
                 break;
 
             case 'd':
                  if (snake.direction != LEFT) {
                     snake.direction = RIGHT;      
-                               
                  }
                 break;
 
             case 'a':
                 if (snake.direction != RIGHT) {
-                    snake.direction = LEFT;    
-                                  
+                    snake.direction = LEFT;        
                 }
                 break;
 

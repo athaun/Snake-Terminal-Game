@@ -1,7 +1,8 @@
-#pragma once
 #include <string>
 
-#define mapSize 40
+#pragma once
+
+#define mapSize 53
 
 #define amountOfFood 4
 
@@ -15,6 +16,9 @@ extern std::string lightgray;
 extern std::string map [mapSize][mapSize];
 
 extern std::pair <int, int> food [amountOfFood];
+
+void log (std::string s);
+void spamLog (std::string s);
 
 void setTile (int x, int y, std::string c);
 void initMap ();

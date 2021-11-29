@@ -1,0 +1,4 @@
+TODO:
+- Ask user which mode to go into
+- Ask user 
+- create new pair type with X and Y

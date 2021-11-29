@@ -8,7 +8,6 @@
 
 using namespace std;
 
-
 std::string yellow = "\e[1;33m";
 std::string green = "\033[0;32m";
 std::string white = "\e[0;97m";
@@ -18,9 +17,9 @@ std::string lightgray = "\e[0;37m";
 
 std::string map [mapSize][mapSize];
 
-string statsPanel = "Hello";
-
 std::pair <int, int> food [amountOfFood];
+
+string printout;
 
 void setTile (int x, int y, std::string c) {
     if (x < mapSize && y < mapSize) {
@@ -29,9 +28,8 @@ void setTile (int x, int y, std::string c) {
 }
 
 bool foodTilesCreated = false;
-
 void initMap () {
-    if (!foodTilesCreated) {
+    if (!foodTilesCreated && network.isServer) {
         for (int i = 0; i < ARRAY_SIZE(food); i ++) {
             int rx = random(0, ARRAY_SIZE(map)); // Create new random positions for the food
             int ry = random(0, ARRAY_SIZE(map[0]));
@@ -40,9 +38,14 @@ void initMap () {
         }
         foodTilesCreated = true;
     }
+
     for (int y = 0; y < ARRAY_SIZE(map[0]); y ++) {
         for (int x = 0; x < ARRAY_SIZE(map); x ++) {
-            setTile(x, y, "`");
+            if (x % 4 == 0 && y % 4 == 0) {
+                setTile(x, y, "`");
+            } else {
+                setTile(x, y, " ");
+            }
         }
     }
     for (int i = 0; i < ARRAY_SIZE(food); i ++) {
@@ -55,7 +58,7 @@ void clearScreen () {
 }
 
 void printMap () {
-    // Loops through the 2D array map, n prints the std::stringacter contained at that index
+    // Loops through the 2D array map, n prints the character contained at that index
     for (int y = 0; y < ARRAY_SIZE(map[0]); y ++) {
         for (int x = 0; x < ARRAY_SIZE(map); x ++) {
             std::cout << map[x][y] << " ";
@@ -64,8 +67,16 @@ void printMap () {
     }
 }
 
-void printStat () {
-    printf("\n%s \n", statsPanel.c_str());
+void log (string s) {
+    printout = s + "\n";
+}
+
+void spamLog (string s) {
+    printout += s + "\n";
+}
+
+void printStat () {  
     printf("Press \"q\" to quit.\n");
-    printf("You have a score of: %d \n\n", (int)snake.score);
+    printf("You have a score of: %d \n", (int)snake.score);
+    printf("\n%s \n", printout.c_str());
 }
